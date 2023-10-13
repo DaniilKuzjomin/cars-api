@@ -1,67 +1,128 @@
 openapi: 3.0.2
 info:
-    title: Cars-API
-    version: 1.0.0
-    description: '### This is a Swagger UI for our Cars API'
+  title: Cars-API
+  version: 1.0.0
+  description: This is a Swagger UI for our Cars API
 paths:
-    /cars:
-        get:
-            tags:
-                - cars
-            responses:
-                '200':
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    type: string
-                            examples:
-                                List of cars:
-                                    value:
-                                        - BMW
-                                        - M3
-            summary: Get a list of all cars
-            description: Returns a list of all cars in API
-    '/cars/{id}':
-        get:
-            tags:
-                - details
-            responses:
-                '200':
-                    content:
-                        application/json:
-                            schema:
-                                type: array
-                                items:
-                                    type: string
-                            examples:
-                                Full details of a given id car:
-                                    value:
-                                        id: 1
-                                        name: BMW
-                                        since: 1916
-                    description: Returns full details of a given id car
-                '404':
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/error'
-                            examples:
-                                Car /w+ was not found in car array:
-                                    value: '{"Car was not found in a car array"}'
-                    description: Car was not found in cars array
-            operationId: id
-            summary: Get full details of cars
-            description: Returns full details of a given id car
-components:
-    schemas:
-        error:
-            title: Root Type for error
-            description: ''
-            type: object
-            properties:
-                error:
+  /cars:
+    get:
+      tags:
+        - cars
+      responses:
+        '200':
+          description: List of cars
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    since:
+                      type: integer
+          examples:
+            List of cars:
+              value:
+                - id: 1
+                  name: BMW
+                  since: 1916
+                - id: 2
+                  name: Mercedes-Benz
+                  since: 1926
+                # Add other cars here...
+      summary: Get a list of all cars
+      description: Returns a list of all cars in the API
+  '/cars/{id}':
+    get:
+      tags:
+        - cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the car to retrieve
+      responses:
+        '200':
+          description: Full details of a given car by ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
                     type: string
-            example:
-                error: Error message.
+                  since:
+                    type: integer
+              examples:
+                Full details of a given id car:
+                  value:
+                    id: 1
+                    name: BMW
+                    since: 1916
+        '404':
+          description: Car not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error'
+              examples:
+                Car not found in cars array:
+                  value:
+                    error: Car not found
+      operationId: getCarById
+      summary: Get full details of a car by ID
+      description: Returns full details of a car with the given ID
+    post:
+      tags:
+        - cars
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                since:
+                  type: integer
+            required:
+              - name
+              - since
+      responses:
+        '201':
+          description: Car created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  since:
+                    type: integer
+              example:
+                id: 51
+                name: Tesla
+                since: 2003
+      summary: Add a new car
+      description: Adds a new car to the API
+components:
+  schemas:
+    error:
+      title: Error
+      type: object
+      properties:
+        error:
+          type: string
+      example:
+        error: Error message.

@@ -1,8 +1,11 @@
-const app = require('express')()
+const express = require('express')
+const app = express()
 const port = 8080
 const swaggerUi = require('swagger-ui-express')
 const yamljs = require('yamljs')
 const swaggerDocument = yamljs.load('./docs/swagger.yaml');
+
+app.use(express.json())
 
 const cars = [
     { id: 1, name: "BMW", since: 1916 },
@@ -86,8 +89,29 @@ app.get('/cars/:id', (req, res)=>{
     res.send(cars[req.params.id - 1])
 })
 
+app.post('/cars', (req, res) => {
+    if(!req.body.name || !req.body.since){
+        return res.status(400).send({error: 'One or all params are missing'})
+    }
+    let car = {
+        id: cars.length + 1,
+        since: req.body.since,
+        name: req.body.name
+    }
+
+    cars.push(car)
+
+    res.status(201)
+        .location(`${getBaseUrl(req)}/cars/${cats.length}`)
+        .send(car)
+})
+
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.listen(port, () => {
     console.log(`Api up at: http://localhost:${port}`)
 })
+
+function getBaseUrl(req){
+    return req.connection && req.connection.encrypted ? 'https' : 'http' + `://${req.header.host}`
+}
