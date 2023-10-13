@@ -106,6 +106,14 @@ app.post('/cars', (req, res) => {
         .send(car)
 })
 
+app.delete('/cars/:id', (req, res) => {
+    if (typeof cars[req.params.id - 1] === 'undefined') {
+        return res.status(404).send({ error: "Car not found" });
+    }
+    games.splice(req.params.id - 1, 1);
+    res.status(204).send({ error: "No content" });
+})
+
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.listen(port, () => {

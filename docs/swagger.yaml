@@ -24,18 +24,54 @@ paths:
                       type: string
                     since:
                       type: integer
-          examples:
-            List of cars:
-              value:
-                - id: 1
-                  name: BMW
-                  since: 1916
-                - id: 2
-                  name: Mercedes-Benz
-                  since: 1926
-                # Add other cars here...
+              examples:
+                List of cars:
+                  value:
+                    - id: 1
+                      name: BMW
+                      since: 1916
+                    - id: 2
+                      name: Mercedes-Benz
+                      since: 1926
+                    # Add other cars here...
       summary: Get a list of all cars
       description: Returns a list of all cars in the API
+    post:
+      tags:
+        - cars
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                since:
+                  type: integer
+            required:
+              - name
+              - since
+      responses:
+        '201':
+          description: Car created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  since:
+                    type: integer
+              example:
+                id: 51
+                name: Tesla
+                since: 2003
+      summary: Add a new car
+      description: Adds a new car to the API
   '/cars/{id}':
     get:
       tags:
@@ -80,42 +116,31 @@ paths:
       operationId: getCarById
       summary: Get full details of a car by ID
       description: Returns full details of a car with the given ID
-    post:
+    delete:
       tags:
         - cars
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                since:
-                  type: integer
-            required:
-              - name
-              - since
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the car to delete
       responses:
-        '201':
-          description: Car created successfully
+        '204':
+          description: Car deleted successfully
+        '404':
+          description: Car not found
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                  name:
-                    type: string
-                  since:
-                    type: integer
-              example:
-                id: 51
-                name: Tesla
-                since: 2003
-      summary: Add a new car
-      description: Adds a new car to the API
+                $ref: '#/components/schemas/error'
+              examples:
+                Car not found in cars array:
+                  value:
+                    error: Car not found
+      summary: Delete a car by ID
+      description: Deletes a car with the given ID from the API
 components:
   schemas:
     error:
