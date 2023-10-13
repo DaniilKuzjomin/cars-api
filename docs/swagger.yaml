@@ -1,0 +1,67 @@
+openapi: 3.0.2
+info:
+    title: Cars-API
+    version: 1.0.0
+    description: '### This is a Swagger UI for our Cars API'
+paths:
+    /cars:
+        get:
+            tags:
+                - cars
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                            examples:
+                                List of cars:
+                                    value:
+                                        - BMW
+                                        - M3
+            summary: Get a list of all cars
+            description: Returns a list of all cars in API
+    '/cars/{id}':
+        get:
+            tags:
+                - details
+            responses:
+                '200':
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+                            examples:
+                                Full details of a given id car:
+                                    value:
+                                        id: 1
+                                        name: BMW
+                                        since: 1916
+                    description: Returns full details of a given id car
+                '404':
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/error'
+                            examples:
+                                Car /w+ was not found in car array:
+                                    value: '{"Car was not found in a car array"}'
+                    description: Car was not found in cars array
+            operationId: id
+            summary: Get full details of cars
+            description: Returns full details of a given id car
+components:
+    schemas:
+        error:
+            title: Root Type for error
+            description: ''
+            type: object
+            properties:
+                error:
+                    type: string
+            example:
+                error: Error message.
