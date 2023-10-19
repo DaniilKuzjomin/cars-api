@@ -116,6 +116,37 @@ paths:
       operationId: getCarById
       summary: Get full details of a car by ID
       description: Returns full details of a car with the given ID
+    put:  # Операция PUT для обновления информации о машинах
+      tags:
+        - cars
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the car to update
+      requestBody:
+        description: New information for the car
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CarInput'
+      responses:
+        '200':
+          description: Car updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+      '404':
+        description: Car not found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      summary: Update a car by ID
+      description: Updates information about a car with the given ID
     delete:
       tags:
         - cars
@@ -134,16 +165,40 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error'
-              examples:
-                Car not found in cars array:
-                  value:
-                    error: Car not found
+                $ref: '#/components/schemas/Error'
       summary: Delete a car by ID
       description: Deletes a car with the given ID from the API
 components:
   schemas:
-    error:
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        since:
+          type: integer
+      example:
+        id: 1
+        name: BMW
+        since: 1916
+
+    CarInput:
+      type: object
+      properties:
+        name:
+          type: string
+        since:
+          type: integer
+      required:
+        - name
+        - since
+      example:
+        name: Tesla
+        since: 2003
+
+    Error:
       title: Error
       type: object
       properties:

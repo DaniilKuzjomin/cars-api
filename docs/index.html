@@ -6,8 +6,22 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <style>
+            .hover-underline:hover {
+            text-decoration: underline;
+            cursor: pointer; /* Этот стиль добавляет указатель мыши, чтобы обозначить, что ячейка кликабельна */
+            }
+        </style>
+    
+    
     </head>
+
+    <header>
+        <h1>Webpage with cars and their founding date</h1><br>
+    </header>
     <body>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#carAddModal" @click="AddCarModal">Add new car in list</button>
+    <br><br>
 <div id="app">
     <table id="carsTable" class="table table-striped table-bordered">
         <tr>
@@ -15,7 +29,7 @@
             <th>Since</th>
         </tr>
         <tr v-for="car in cars">
-            <td @click="getCar(car.id)">{{ car.name }}</td>
+            <td @click="getCar(car.id)" class="hover-underline">{{ car.name }}</td>
             <td>{{ car.since }}</td>
         </tr>
     </table>
@@ -33,11 +47,61 @@
               </table>
             </div>
             <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="EditCarModal">Edit car information</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="DeleteCar(carInModal.id)">Delete this car</button>
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close button</button>
             </div>
           </div>
         </div>
     </div>
+
+    <div id="carAddModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <tr><th>Id</th><td>{{ cars.length + 1 }}</td></tr>
+                        <tr><th>Name</th><td><input type="text" v-model="newCar.name"></td></tr>
+                        <tr><th>Since</th><td><input type="number" v-model="newCar.since"></td></tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="AddCar">Add car</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close button</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="carEditModal" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-striped">
+                        <tr><th>Id</th><td>{{carInModal.id}}</td></tr>
+                        <tr><th>Name</th><td><input type="text" v-model="carInModal.name"></td></tr>
+                        <tr><th>Since</th><td><input type="number" v-model="carInModal.since"></td></tr>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @click="EditCar">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close button</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+
+
+
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>

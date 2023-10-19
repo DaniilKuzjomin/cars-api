@@ -104,7 +104,7 @@ app.post('/cars', (req, res) => {
     cars.push(car)
 
     res.status(201)
-        .location(`${getBaseUrl(req)}/cars/${cats.length}`)
+        .location(`${getBaseUrl(req)}/cars/${cars.length}`)
         .send(car)
 })
 
@@ -112,9 +112,27 @@ app.delete('/cars/:id', (req, res) => {
     if (typeof cars[req.params.id - 1] === 'undefined') {
         return res.status(404).send({ error: "Car not found" });
     }
-    games.splice(req.params.id - 1, 1);
+    cars.splice(req.params.id - 1, 1);
     res.status(204).send({ error: "No content" });
 })
+
+app.put('/cars/:id', (req, res) => {
+    const id = parseInt(req.params.id, 10);
+    const carIndex = cars.findIndex(car => car.id === id);
+
+    if (carIndex === -1) {
+        return res.status(404).send({ error: "Car not found" });
+    }
+
+    const updatedCar = {
+        id: id,
+        name: req.body.name || cars[carIndex].name,
+        since: req.body.since || cars[carIndex].since
+    };
+
+    cars[carIndex] = updatedCar;
+    res.send(updatedCar);
+});
 
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
